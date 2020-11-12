@@ -13,25 +13,14 @@ const path = require('path');
 // Set static folder
 // app.use(express.static(path.join(__dirname, 'public')));
 
+//body parser middleware
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 
-const members = require('./members');
 const logger = require('./middleware/logger');
 //Init middleware
 app.use(logger);
-//Gets all members
-app.get('/api/members', (req, res) => {
-	res.json(members);
-});
+//Members API routes
+app.use('/api/members', require('./routes/api/members'));
 
-
-//Get single member
-app.get('/api/members/:id', (req, res) => {
-	// res.send(req.params.id);
-	const found = members.some(member => member.id === parseInt(req.params.id));
-	if (found) {
-		// res.json(members.filter(member => member.id === parseInt((req.params.id)));
-	} else {
-		res.status(400).json({msg: `message member not found with the id ${req.params.id}`});
-	}
-})
 app.listen(PORT, () => console.log(`server started on port ${PORT}`));
